@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  rabbitmq-node1:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_node1
+    hostname: rabbitmq1 # 节点间通信必须依赖 hostname
+    ports:
+      - "5672:5672"   # 代码连接端口
+      - "15672:15672" # 网页管理控制台
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=my_secret_cookie_12345 # 必须统一！
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    volumes:
+      - ./data/node1:/var/lib/rabbitmq
+
+  rabbitmq-node2:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_node2
+    hostname: rabbitmq2
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=my_secret_cookie_12345 # 必须统一！
+    volumes:
+      - ./data/node2:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq-node1
+
+  rabbitmq-node3:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_node3
+    hostname: rabbitmq3
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=my_secret_cookie_12345 # 必须统一！
+    volumes:
+      - ./data/node3:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq-node2

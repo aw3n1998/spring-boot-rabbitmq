@@ -1,0 +1,20 @@
+spring:
+  rabbitmq:
+    # 填入集群的多个节点地址，Spring Boot 底层会自动实现负载均衡和故障转移
+    addresses: 127.0.0.1:5672,127.0.0.1:5673,127.0.0.1:5674
+    username: admin
+    password: admin123
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-interval: 10000ms
+
+server:
+  port: 8080
